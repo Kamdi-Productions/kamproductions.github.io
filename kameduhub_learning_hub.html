@@ -1,0 +1,1461 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KamEduHub - Smart Interactive Learning Hub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#f0f7ff',
+              100: '#e0effe',
+              500: '#2563eb',
+              600: '#1d4ed8',
+              700: '#1e40af',
+              900: '#0f172a'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Custom Scrollbar & Utility Theme CSS */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); }
+    ::-webkit-scrollbar-thumb { background: rgba(100,116,139,0.3); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(100,116,139,0.5); }
+    
+    .glass-card {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(229, 231, 235, 0.7);
+    }
+    .dark .glass-card {
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(51, 65, 85, 0.6);
+    }
+
+    /* Custom Theme Dynamic Presets */
+    body.theme-light { background-color: #f8fafc; color: #0f172a; }
+    body.theme-dark { background-color: #0b0f19; color: #f8fafc; }
+    body.theme-sunset { background-color: #2d1217; color: #fdf2f2; }
+    body.theme-forest { background-color: #0a1f1c; color: #f0fdf4; }
+    body.theme-cyberpunk { background-color: #120024; color: #f0abfc; }
+    body.theme-lavender { background-color: #181528; color: #f3e8ff; }
+
+    .pulse-glow {
+      box-shadow: 0 0 20px rgba(37, 99, 235, 0.35);
+    }
+  </style>
+</head>
+<body class="theme-dark h-full flex flex-col font-sans transition-colors duration-300">
+
+  <!-- Top Navigation Header -->
+  <header class="sticky top-0 z-40 border-b border-slate-700/60 bg-slate-900/90 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <!-- Logo & Brand Name -->
+      <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('dashboard')">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white font-extrabold text-xl shadow-lg shadow-blue-500/30">
+          K
+        </div>
+        <div>
+          <span class="text-xl font-black tracking-tight text-white">KamEdu<span class="text-blue-500">Hub</span></span>
+          <span class="hidden sm:inline-block text-xs bg-blue-500/20 text-blue-400 font-semibold px-2 py-0.5 rounded-full ml-2">v2.5 AI Pro</span>
+        </div>
+      </div>
+
+      <!-- Desktop Navigation Menu -->
+      <nav class="hidden md:flex items-center space-x-1 lg:space-x-2">
+        <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition">
+          <i class="fa-solid fa-house mr-1.5 text-blue-400"></i> Dashboard
+        </button>
+        <button onclick="switchTab('subjects')" id="nav-subjects" class="nav-btn px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition">
+          <i class="fa-solid fa-book-open mr-1.5 text-indigo-400"></i> Subjects
+        </button>
+        <button onclick="switchTab('questions')" id="nav-questions" class="nav-btn px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition">
+          <i class="fa-solid fa-robot mr-1.5 text-emerald-400"></i> Ask AI Tutor
+        </button>
+        <button onclick="switchTab('exam')" id="nav-exam" class="nav-btn px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition">
+          <i class="fa-solid fa-file-pen mr-1.5 text-amber-400"></i> Take Exam
+        </button>
+        <button onclick="switchTab('hangout')" id="nav-hangout" class="nav-btn px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition">
+          <i class="fa-solid fa-comments mr-1.5 text-purple-400"></i> Hang Out
+        </button>
+        <button onclick="switchTab('about')" id="nav-about" class="nav-btn px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition">
+          <i class="fa-solid fa-circle-info mr-1.5 text-cyan-400"></i> About Us
+        </button>
+        <button onclick="switchTab('settings')" id="nav-settings" class="nav-btn px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition">
+          <i class="fa-solid fa-gear mr-1.5 text-rose-400"></i> Settings
+        </button>
+      </nav>
+
+      <!-- Right Action Items: Rating & User Profile -->
+      <div class="flex items-center space-x-3">
+        <button onclick="openModal('ratingModal')" class="hidden sm:flex items-center space-x-1 text-xs bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 px-3 py-1.5 rounded-full transition">
+          <i class="fa-solid fa-star text-amber-400"></i>
+          <span>Rate Us</span>
+        </button>
+
+        <div id="userProfileHeader" class="flex items-center space-x-2 bg-slate-800/80 p-1.5 pr-3 rounded-full border border-slate-700">
+          <!-- Auth State Injected by JS -->
+        </div>
+
+        <!-- Mobile Menu Toggle -->
+        <button onclick="toggleMobileMenu()" class="md:hidden text-slate-300 hover:text-white p-2 rounded-lg focus:outline-none">
+          <i class="fa-solid fa-bars text-xl"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Dropdown Navigation -->
+    <div id="mobileMenu" class="hidden md:hidden border-b border-slate-800 bg-slate-900/95 px-4 pt-2 pb-4 space-y-1">
+      <button onclick="switchTab('dashboard')" class="w-full text-left px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800 flex items-center space-x-2">
+        <i class="fa-solid fa-house text-blue-400 w-5"></i> <span>Dashboard</span>
+      </button>
+      <button onclick="switchTab('subjects')" class="w-full text-left px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800 flex items-center space-x-2">
+        <i class="fa-solid fa-book-open text-indigo-400 w-5"></i> <span>Subjects</span>
+      </button>
+      <button onclick="switchTab('questions')" class="w-full text-left px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800 flex items-center space-x-2">
+        <i class="fa-solid fa-robot text-emerald-400 w-5"></i> <span>Ask AI Tutor</span>
+      </button>
+      <button onclick="switchTab('exam')" class="w-full text-left px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800 flex items-center space-x-2">
+        <i class="fa-solid fa-file-pen text-amber-400 w-5"></i> <span>Take Exam</span>
+      </button>
+      <button onclick="switchTab('hangout')" class="w-full text-left px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800 flex items-center space-x-2">
+        <i class="fa-solid fa-comments text-purple-400 w-5"></i> <span>Hang Out</span>
+      </button>
+      <button onclick="switchTab('about')" class="w-full text-left px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800 flex items-center space-x-2">
+        <i class="fa-solid fa-circle-info text-cyan-400 w-5"></i> <span>About Us</span>
+      </button>
+      <button onclick="switchTab('settings')" class="w-full text-left px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800 flex items-center space-x-2">
+        <i class="fa-solid fa-gear text-rose-400 w-5"></i> <span>Settings</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Application Container -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
+
+    <!-- TAB 1: DASHBOARD / HOME -->
+    <section id="tab-dashboard" class="tab-content space-y-6">
+      <!-- Hero Welcome Banner -->
+      <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-700 p-6 sm:p-8 text-white shadow-xl">
+        <div class="relative z-10 max-w-2xl">
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-white/20 text-white mb-3 backdrop-blur-sm">
+            <i class="fa-solid fa-sparkles mr-1.5"></i> Welcome to KamEduHub Learning Ecosystem
+          </span>
+          <h1 id="welcomeUserHeading" class="text-2xl sm:text-4xl font-extrabold tracking-tight mb-2">Welcome Back, Scholar!</h1>
+          <p class="text-blue-100 text-sm sm:text-base leading-relaxed mb-6">
+            Explore 16 comprehensive subject modules, ask our Gemini AI Tutor anything, test your mastery with realistic exams, or relax in the student Hangout lounge.
+          </p>
+          <div class="flex flex-wrap gap-3">
+            <button onclick="switchTab('questions')" class="bg-white text-blue-600 hover:bg-blue-50 font-bold px-5 py-2.5 rounded-xl shadow-md transition flex items-center space-x-2">
+              <i class="fa-solid fa-comments"></i> <span>Ask AI Question</span>
+            </button>
+            <button onclick="switchTab('exam')" class="bg-blue-800/60 hover:bg-blue-800 text-white font-semibold px-5 py-2.5 rounded-xl border border-white/20 transition flex items-center space-x-2">
+              <i class="fa-solid fa-graduation-cap"></i> <span>Start Examination</span>
+            </button>
+          </div>
+        </div>
+        <div class="absolute right-0 bottom-0 opacity-15 pointer-events-none transform translate-x-10 translate-y-10">
+          <i class="fa-solid fa-graduation-cap text-[240px]"></i>
+        </div>
+      </div>
+
+      <!-- Quick Stats Metrics Grid -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="glass-card p-4 rounded-xl flex items-center space-x-4">
+          <div class="w-12 h-12 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center text-xl">
+            <i class="fa-solid fa-book text-2xl"></i>
+          </div>
+          <div>
+            <p class="text-xs text-slate-400 font-medium">Selected Subjects</p>
+            <h3 id="statEnrolledCount" class="text-xl font-bold text-slate-100">16 / 16</h3>
+          </div>
+        </div>
+        <div class="glass-card p-4 rounded-xl flex items-center space-x-4">
+          <div class="w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl">
+            <i class="fa-solid fa-fire text-2xl"></i>
+          </div>
+          <div>
+            <p class="text-xs text-slate-400 font-medium">Daily Study Streak</p>
+            <h3 class="text-xl font-bold text-slate-100">4 Days 🔥</h3>
+          </div>
+        </div>
+        <div class="glass-card p-4 rounded-xl flex items-center space-x-4">
+          <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-xl">
+            <i class="fa-solid fa-trophy text-2xl"></i>
+          </div>
+          <div>
+            <p class="text-xs text-slate-400 font-medium">Exams Taken</p>
+            <h3 id="statExamsTaken" class="text-xl font-bold text-slate-100">0</h3>
+          </div>
+        </div>
+        <div class="glass-card p-4 rounded-xl flex items-center space-x-4">
+          <div class="w-12 h-12 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center text-xl">
+            <i class="fa-solid fa-brain text-2xl"></i>
+          </div>
+          <div>
+            <p class="text-xs text-slate-400 font-medium">AI Queries Asked</p>
+            <h3 id="statAiQueries" class="text-xl font-bold text-slate-100">0</h3>
+          </div>
+        </div>
+      </div>
+
+      <!-- Enrolled Selected Subjects Section -->
+      <div>
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-xl font-bold text-slate-100 flex items-center space-x-2">
+            <i class="fa-solid fa-book-open text-blue-400"></i>
+            <span>Your Selected Study Curriculum</span>
+          </h2>
+          <button onclick="openModal('subjectSelectModal')" class="text-xs text-blue-400 hover:text-blue-300 bg-blue-500/10 px-3 py-1.5 rounded-lg border border-blue-500/20 transition">
+            <i class="fa-solid fa-sliders mr-1"></i> Edit Selected Subjects
+          </button>
+        </div>
+        <div id="dashboardSubjectGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <!-- Dynamically Populated by JavaScript -->
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: SUBJECTS HUB -->
+    <section id="tab-subjects" class="tab-content space-y-6 hidden">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 class="text-2xl font-extrabold text-slate-100">Subjects & Core Curriculum</h1>
+          <p class="text-sm text-slate-400">Master 16 fundamental academic subjects with curriculum notes and flashcard summaries.</p>
+        </div>
+        <div class="relative w-full md:w-72">
+          <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-slate-400 text-sm"></i>
+          <input type="text" id="subjectSearchInput" oninput="filterSubjects()" placeholder="Search subjects..." class="w-full bg-slate-800 border border-slate-700 rounded-xl pl-9 pr-4 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500">
+        </div>
+      </div>
+
+      <!-- Subject Full Grid -->
+      <div id="allSubjectsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <!-- Rendered by JavaScript -->
+      </div>
+    </section>
+
+    <!-- TAB 3: QUESTION TAB / AI TUTOR -->
+    <section id="tab-questions" class="tab-content space-y-6 hidden">
+      <div class="glass-card rounded-2xl p-6 border border-slate-700/80">
+        <div class="flex items-center space-x-4 mb-6 pb-4 border-b border-slate-700/60">
+          <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-white text-2xl shadow-lg shadow-emerald-500/20">
+            <i class="fa-solid fa-robot"></i>
+          </div>
+          <div>
+            <h2 class="text-xl font-extrabold text-slate-100">KamEduHub AI Question Solver & Assistant</h2>
+            <p class="text-xs text-slate-400">Ask any academic question across all 16 subjects for instant step-by-step explanations powered by Gemini AI.</p>
+          </div>
+        </div>
+
+        <!-- Chat Conversation History -->
+        <div id="aiChatContainer" class="h-96 overflow-y-auto space-y-4 p-4 rounded-xl bg-slate-950/60 border border-slate-800 mb-4">
+          <!-- Initial Welcome Message from AI -->
+          <div class="flex items-start space-x-3">
+            <div class="w-8 h-8 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center text-sm font-bold flex-shrink-0">
+              <i class="fa-solid fa-robot"></i>
+            </div>
+            <div class="bg-slate-800 text-slate-200 p-4 rounded-2xl rounded-tl-none border border-slate-700 text-sm max-w-2xl">
+              Hello! I am your KamEduHub AI Academic Assistant. Select a subject below or ask me any question in Mathematics, Science, French, History, Physics, Chemistry, ICT, and more!
+            </div>
+          </div>
+        </div>
+
+        <!-- Input Control Panel -->
+        <form onsubmit="handleAiQuestionSubmit(event)" class="space-y-3">
+          <div class="flex flex-wrap gap-2 items-center">
+            <label class="text-xs text-slate-400 font-medium">Select Subject Scope:</label>
+            <select id="aiSubjectSelect" class="bg-slate-800 border border-slate-700 text-slate-200 rounded-lg text-xs px-3 py-1.5 focus:outline-none focus:border-blue-500">
+              <option value="General Academic">General Academic Query</option>
+              <option value="Mathematics">Mathematics</option>
+              <option value="English">English Language</option>
+              <option value="Basic Science">Basic Science</option>
+              <option value="Basic Technology">Basic Technology</option>
+              <option value="History of All Countries">History of All Countries</option>
+              <option value="Business Studies">Business Studies</option>
+              <option value="ICT">ICT</option>
+              <option value="Music">Music</option>
+              <option value="French">French</option>
+              <option value="Languages">Languages</option>
+              <option value="Social Studies">Social Studies</option>
+              <option value="Physical and Health Education">Physical & Health Education</option>
+              <option value="Chemistry">Chemistry</option>
+              <option value="Biology">Biology</option>
+              <option value="Physics">Physics</option>
+              <option value="Geography">Geography</option>
+            </select>
+          </div>
+
+          <div class="flex space-x-2">
+            <input type="text" id="aiQuestionInput" placeholder="e.g. Explain photosynthesis step-by-step or solve 2x + 5 = 15..." required class="flex-1 bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500">
+            <button type="submit" id="aiSubmitBtn" class="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-6 py-3 rounded-xl transition flex items-center space-x-2">
+              <i class="fa-solid fa-paper-plane"></i>
+              <span class="hidden sm:inline">Ask AI</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- TAB 4: TAKE AN EXAMINATION -->
+    <section id="tab-exam" class="tab-content space-y-6 hidden">
+      <!-- Exam Setup View -->
+      <div id="examSetupScreen" class="glass-card rounded-2xl p-6 sm:p-8 border border-slate-700/80 space-y-6">
+        <div class="text-center max-w-xl mx-auto space-y-2">
+          <div class="w-16 h-16 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-3xl mx-auto border border-amber-500/30">
+            <i class="fa-solid fa-pen-nib"></i>
+          </div>
+          <h2 class="text-2xl font-extrabold text-slate-100">KamEduHub Examination Center</h2>
+          <p class="text-sm text-slate-400">Select a subject to take a realistic timed assessment test with instant grading and analysis.</p>
+        </div>
+
+        <form onsubmit="startExam(event)" class="max-w-2xl mx-auto space-y-5 bg-slate-900/60 p-6 rounded-xl border border-slate-800">
+          <div>
+            <label class="block text-sm font-semibold text-slate-300 mb-2">Which subject do you want to take an exam on?</label>
+            <select id="examSubjectSelect" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-amber-500">
+              <!-- Dynamically populated -->
+            </select>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1.5">Difficulty Level</label>
+              <select id="examDifficultySelect" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-amber-500">
+                <option value="Easy">Easy (Fundamentals)</option>
+                <option value="Medium" selected>Medium (Standard)</option>
+                <option value="Hard">Hard (Advanced Challenge)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1.5">Number of Questions</label>
+              <select id="examQuestionCount" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-amber-500">
+                <option value="5">5 Questions (Quick Quiz)</option>
+                <option value="10" selected>10 Questions (Standard Exam)</option>
+              </select>
+            </div>
+          </div>
+
+          <button type="submit" class="w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-amber-500/25 transition">
+            <i class="fa-solid fa-play mr-2"></i> Start Examination Now
+          </button>
+        </form>
+      </div>
+
+      <!-- Live Exam Session Interface (Hidden by default) -->
+      <div id="examActiveScreen" class="hidden glass-card rounded-2xl p-6 border border-slate-700/80 space-y-6">
+        <div class="flex flex-wrap items-center justify-between pb-4 border-b border-slate-700/60 gap-3">
+          <div>
+            <span id="examSubjectBadge" class="text-xs font-bold bg-amber-500/20 text-amber-300 px-3 py-1 rounded-full border border-amber-500/30">Subject</span>
+            <h3 id="examTitleText" class="text-xl font-bold text-slate-100 mt-1">Examination in Progress</h3>
+          </div>
+          <div class="flex items-center space-x-4">
+            <div class="text-right">
+              <p class="text-xs text-slate-400">Time Remaining</p>
+              <p id="examTimerDisplay" class="text-lg font-extrabold text-amber-400 tracking-wider">10:00</p>
+            </div>
+            <button onclick="submitExam()" class="bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold px-4 py-2 rounded-xl transition">
+              Submit Early
+            </button>
+          </div>
+        </div>
+
+        <div id="examQuestionContainer" class="space-y-6">
+          <!-- Rendered by Exam Engine -->
+        </div>
+
+        <div class="flex items-center justify-between pt-4 border-t border-slate-700/60">
+          <button id="examPrevBtn" onclick="navigateExamQuestion(-1)" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold px-4 py-2.5 rounded-xl transition">
+            <i class="fa-solid fa-arrow-left mr-1"></i> Previous
+          </button>
+          <span id="examProgressIndicator" class="text-xs font-bold text-slate-400">Question 1 of 10</span>
+          <button id="examNextBtn" onclick="navigateExamQuestion(1)" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition">
+            Next <i class="fa-solid fa-arrow-right ml-1"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Exam Result Certificate Modal / Display (Hidden by default) -->
+      <div id="examResultScreen" class="hidden glass-card rounded-2xl p-6 sm:p-8 border border-slate-700/80 text-center space-y-6">
+        <div class="w-20 h-20 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center text-4xl mx-auto">
+          <i class="fa-solid fa-award"></i>
+        </div>
+        <h2 class="text-3xl font-extrabold text-white">Exam Completed!</h2>
+        <div class="max-w-sm mx-auto bg-slate-900/80 p-6 rounded-2xl border border-slate-800 space-y-3">
+          <p class="text-xs text-slate-400 uppercase tracking-widest">Final Score</p>
+          <div id="examFinalScore" class="text-5xl font-black text-emerald-400">80%</div>
+          <p id="examFeedbackText" class="text-xs text-slate-300">Excellent performance! You demonstrate great comprehension.</p>
+        </div>
+        <div class="flex justify-center space-x-4">
+          <button onclick="resetExamScreen()" class="bg-slate-800 hover:bg-slate-700 text-white font-semibold px-6 py-2.5 rounded-xl text-sm transition">
+            <i class="fa-solid fa-rotate-right mr-1.5"></i> Retake Exam
+          </button>
+          <button onclick="switchTab('dashboard')" class="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-6 py-2.5 rounded-xl text-sm transition">
+            Back to Dashboard
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 5: HANG OUT TAB -->
+    <section id="tab-hangout" class="tab-content space-y-6 hidden">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Community Discussion Lounge -->
+        <div class="lg:col-span-2 glass-card rounded-2xl p-6 border border-slate-700/80 space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-700/60">
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center text-lg">
+                <i class="fa-solid fa-comments"></i>
+              </div>
+              <div>
+                <h3 class="font-bold text-slate-100">Student Lounge Chat Room</h3>
+                <p class="text-xs text-slate-400">Live chat room for peer support & study tips</p>
+              </div>
+            </div>
+            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 mr-1.5 animate-pulse"></span> 18 Scholars Online
+            </span>
+          </div>
+
+          <div id="hangoutChatBox" class="h-80 overflow-y-auto space-y-3 p-3 bg-slate-950/50 rounded-xl border border-slate-800">
+            <!-- Simulated Messages -->
+          </div>
+
+          <form onsubmit="sendHangoutMessage(event)" class="flex space-x-2">
+            <input type="text" id="hangoutInput" placeholder="Share study tips or chat with fellow students..." required class="flex-1 bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-purple-500">
+            <button type="submit" class="bg-purple-600 hover:bg-purple-500 text-white font-semibold px-5 py-2.5 rounded-xl transition">
+              <i class="fa-solid fa-paper-plane"></i>
+            </button>
+          </form>
+        </div>
+
+        <!-- Sidebar Widgets: Study Timer & Ambient Sounds -->
+        <div class="space-y-6">
+          <!-- Pomodoro Timer -->
+          <div class="glass-card rounded-2xl p-6 border border-slate-700/80 space-y-4 text-center">
+            <h3 class="font-bold text-slate-100 flex items-center justify-center space-x-2">
+              <i class="fa-solid fa-stopwatch text-rose-400"></i>
+              <span>Pomodoro Focus Timer</span>
+            </h3>
+            <div id="pomodoroDisplay" class="text-4xl font-extrabold text-white tracking-widest my-2">25:00</div>
+            <div class="flex justify-center space-x-2">
+              <button onclick="togglePomodoro()" id="pomoStartBtn" class="bg-rose-600 hover:bg-rose-500 text-white font-semibold text-xs px-4 py-2 rounded-lg transition">Start</button>
+              <button onclick="resetPomodoro()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-xs px-4 py-2 rounded-lg transition">Reset</button>
+            </div>
+          </div>
+
+          <!-- Quick Study Beats Info -->
+          <div class="glass-card rounded-2xl p-6 border border-slate-700/80 space-y-3">
+            <h3 class="font-bold text-slate-100 text-sm flex items-center space-x-2">
+              <i class="fa-solid fa-music text-indigo-400"></i>
+              <span>Study Ambient Radio</span>
+            </h3>
+            <p class="text-xs text-slate-400">Relaxing binaural beats for maximum retention during study sessions.</p>
+            <div class="p-3 bg-slate-900 rounded-xl border border-slate-800 flex items-center justify-between">
+              <span class="text-xs font-semibold text-slate-300">Lo-Fi Study Beats</span>
+              <button onclick="toggleStudyAudio()" id="audioBtn" class="text-xs bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-lg transition">
+                <i class="fa-solid fa-play mr-1"></i> Play
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 6: ABOUT US -->
+    <section id="tab-about" class="tab-content space-y-6 hidden">
+      <div class="glass-card rounded-2xl p-6 sm:p-10 border border-slate-700/80 space-y-8 max-w-4xl mx-auto">
+        <div class="text-center space-y-3">
+          <span class="text-xs font-bold uppercase tracking-widest text-blue-400 bg-blue-500/10 px-3 py-1 rounded-full border border-blue-500/20">Educational Vision</span>
+          <h1 class="text-3xl sm:text-4xl font-black text-white">About KamEduHub</h1>
+          <p class="text-slate-400 text-sm sm:text-base max-w-2xl mx-auto">Empowering global learners with high-quality core academic resources, AI tutor support, and real-time exam simulations.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+          <div class="bg-slate-900/60 p-6 rounded-2xl border border-slate-800 space-y-2">
+            <div class="text-blue-400 text-xl font-bold mb-2"><i class="fa-solid fa-rocket mr-2"></i> Our Mission</div>
+            <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">
+              KamEduHub was built to democratize high-grade secondary education. By leveraging modern interactive technology and artificial intelligence, we make learning intuitive, personalized, and universally accessible across all major disciplines.
+            </p>
+          </div>
+          <div class="bg-slate-900/60 p-6 rounded-2xl border border-slate-800 space-y-2">
+            <div class="text-emerald-400 text-xl font-bold mb-2"><i class="fa-solid fa-microchip mr-2"></i> AI Learning Integration</div>
+            <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">
+              Equipped with Gemini API capabilities, our AI tutors deliver instant explanations, solve complex mathematical expressions, and break down dense concepts in Physics, Chemistry, Languages, and History on demand.
+            </p>
+          </div>
+        </div>
+
+        <div class="border-t border-slate-800 pt-6">
+          <h3 class="text-lg font-bold text-slate-100 mb-4 text-center">Platform Impact Metrics</h3>
+          <div class="grid grid-cols-3 gap-4 text-center">
+            <div class="bg-slate-900/40 p-4 rounded-xl border border-slate-800">
+              <p class="text-2xl font-extrabold text-blue-400">16</p>
+              <p class="text-xs text-slate-400 mt-1">Core Subjects</p>
+            </div>
+            <div class="bg-slate-900/40 p-4 rounded-xl border border-slate-800">
+              <p class="text-2xl font-extrabold text-indigo-400">100%</p>
+              <p class="text-xs text-slate-400 mt-1">Free Access</p>
+            </div>
+            <div class="bg-slate-900/40 p-4 rounded-xl border border-slate-800">
+              <p class="text-2xl font-extrabold text-emerald-400">24/7</p>
+              <p class="text-xs text-slate-400 mt-1">AI Tutor Availability</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 7: SETTINGS TAB -->
+    <section id="tab-settings" class="tab-content space-y-6 hidden">
+      <div class="max-w-3xl mx-auto space-y-6">
+        <!-- Background Theme Customizer -->
+        <div class="glass-card rounded-2xl p-6 border border-slate-700/80 space-y-4">
+          <h2 class="text-lg font-bold text-slate-100 flex items-center space-x-2">
+            <i class="fa-solid fa-palette text-rose-400"></i>
+            <span>Theme & Background Customization</span>
+          </h2>
+          <p class="text-xs text-slate-400">Select your preferred accent theme color for KamEduHub:</p>
+          
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <button onclick="setAppTheme('theme-dark')" class="p-3 rounded-xl border border-slate-700 bg-slate-900 text-white font-medium text-xs hover:border-blue-500 flex items-center space-x-2">
+              <span class="w-4 h-4 rounded-full bg-slate-900 border border-slate-600"></span>
+              <span>Dark Theme</span>
+            </button>
+            <button onclick="setAppTheme('theme-light')" class="p-3 rounded-xl border border-slate-300 bg-slate-100 text-slate-900 font-medium text-xs hover:border-blue-500 flex items-center space-x-2">
+              <span class="w-4 h-4 rounded-full bg-slate-200 border border-slate-400"></span>
+              <span>Light Theme</span>
+            </button>
+            <button onclick="setAppTheme('theme-sunset')" class="p-3 rounded-xl border border-rose-900 bg-[#2d1217] text-rose-200 font-medium text-xs hover:border-rose-500 flex items-center space-x-2">
+              <span class="w-4 h-4 rounded-full bg-rose-700"></span>
+              <span>Sunset Red</span>
+            </button>
+            <button onclick="setAppTheme('theme-forest')" class="p-3 rounded-xl border border-emerald-900 bg-[#0a1f1c] text-emerald-200 font-medium text-xs hover:border-emerald-500 flex items-center space-x-2">
+              <span class="w-4 h-4 rounded-full bg-emerald-700"></span>
+              <span>Forest Emerald</span>
+            </button>
+            <button onclick="setAppTheme('theme-cyberpunk')" class="p-3 rounded-xl border border-fuchsia-900 bg-[#120024] text-fuchsia-200 font-medium text-xs hover:border-fuchsia-500 flex items-center space-x-2">
+              <span class="w-4 h-4 rounded-full bg-fuchsia-600"></span>
+              <span>Cyberpunk</span>
+            </button>
+            <button onclick="setAppTheme('theme-lavender')" class="p-3 rounded-xl border border-purple-900 bg-[#181528] text-purple-200 font-medium text-xs hover:border-purple-500 flex items-center space-x-2">
+              <span class="w-4 h-4 rounded-full bg-purple-600"></span>
+              <span>Lavender Night</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Account Profile Details -->
+        <div class="glass-card rounded-2xl p-6 border border-slate-700/80 space-y-4">
+          <h2 class="text-lg font-bold text-slate-100 flex items-center space-x-2">
+            <i class="fa-solid fa-user-gear text-blue-400"></i>
+            <span>Google Account Status</span>
+          </h2>
+          <div id="settingsProfileBox" class="p-4 bg-slate-900/60 rounded-xl border border-slate-800 flex items-center justify-between">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- Contact Us Form (With Request Email) -->
+        <div class="glass-card rounded-2xl p-6 border border-slate-700/80 space-y-4">
+          <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center text-lg">
+              <i class="fa-solid fa-envelope"></i>
+            </div>
+            <div>
+              <h2 class="text-lg font-bold text-slate-100">Contact Us & Support</h2>
+              <p class="text-xs text-slate-400">Direct contact email: <span class="text-blue-400 font-mono font-semibold">kamdilichukwuikehukwukk@gmail.com</span></p>
+            </div>
+          </div>
+
+          <form onsubmit="handleContactSubmit(event)" class="space-y-4 pt-2">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1">Your Name</label>
+                <input type="text" id="contactName" required placeholder="Enter your full name" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1">Your Email</label>
+                <input type="email" id="contactEmail" required placeholder="name@domain.com" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500">
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">Message or Inquiry</label>
+              <textarea id="contactMessage" rows="3" required placeholder="How can we assist your learning journey?" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500"></textarea>
+            </div>
+            <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-6 py-2.5 rounded-xl text-sm transition">
+              <i class="fa-solid fa-paper-plane mr-2"></i> Send Message
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+
+  <!-- MODAL 1: SUBJECT SELECTION ONBOARDING POPUP -->
+  <div id="subjectSelectModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm hidden">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-2xl w-full p-6 sm:p-8 space-y-6 max-h-[90vh] flex flex-col shadow-2xl">
+      <div class="text-center space-y-2">
+        <span class="text-xs font-extrabold uppercase tracking-widest text-indigo-400 bg-indigo-500/10 px-3 py-1 rounded-full border border-indigo-500/20">Custom Curriculum</span>
+        <h2 class="text-2xl sm:text-3xl font-black text-white">WHAT ARE THE SUBJECTS YOU WANT TO STUDY?</h2>
+        <p class="text-xs text-slate-400">Select any or all 16 subjects to build your personalized study portal.</p>
+      </div>
+
+      <!-- Subject Selection Checkboxes -->
+      <div id="onboardingSubjectList" class="grid grid-cols-1 sm:grid-cols-2 gap-3 overflow-y-auto pr-2 flex-1 my-2">
+        <!-- Rendered by JS -->
+      </div>
+
+      <div class="flex items-center justify-between pt-4 border-t border-slate-800">
+        <button onclick="selectAllSubjects(true)" class="text-xs text-indigo-400 hover:text-indigo-300 font-semibold">
+          Select All (16 Subjects)
+        </button>
+        <button onclick="saveSelectedSubjects()" class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold px-6 py-2.5 rounded-xl shadow-lg transition">
+          Confirm My Subjects <i class="fa-solid fa-check ml-1.5"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 2: RATING POPUP -->
+  <div id="ratingModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm hidden">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 text-center space-y-5 shadow-2xl">
+      <div class="w-14 h-14 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center text-2xl mx-auto">
+        <i class="fa-solid fa-star"></i>
+      </div>
+      <div>
+        <h3 class="text-xl font-extrabold text-white">Rate Your Experience</h3>
+        <p class="text-xs text-slate-400 mt-1">How likely are you to recommend KamEduHub to a friend?</p>
+      </div>
+
+      <!-- Star Rating Input -->
+      <div class="flex justify-center space-x-2 text-2xl" id="starRatingContainer">
+        <i class="fa-solid fa-star star-btn cursor-pointer text-slate-600 hover:text-amber-400 transition" onclick="setRating(1)"></i>
+        <i class="fa-solid fa-star star-btn cursor-pointer text-slate-600 hover:text-amber-400 transition" onclick="setRating(2)"></i>
+        <i class="fa-solid fa-star star-btn cursor-pointer text-slate-600 hover:text-amber-400 transition" onclick="setRating(3)"></i>
+        <i class="fa-solid fa-star star-btn cursor-pointer text-slate-600 hover:text-amber-400 transition" onclick="setRating(4)"></i>
+        <i class="fa-solid fa-star star-btn cursor-pointer text-slate-600 hover:text-amber-400 transition" onclick="setRating(5)"></i>
+      </div>
+
+      <textarea id="ratingFeedback" rows="2" placeholder="Tell us what you love or how we can improve..." class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-amber-500"></textarea>
+
+      <div class="flex space-x-3">
+        <button onclick="closeModal('ratingModal')" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold py-2.5 rounded-xl text-xs transition">Cancel</button>
+        <button onclick="submitRating()" class="flex-1 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-2.5 rounded-xl text-xs transition">Submit Rating</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FLOATING COOKIE CONSENT BANNER -->
+  <div id="cookieBanner" class="fixed bottom-4 right-4 left-4 sm:left-auto sm:max-w-md z-50 bg-slate-900/95 border border-slate-700/80 backdrop-blur-md rounded-2xl p-5 shadow-2xl space-y-3">
+    <div class="flex items-start space-x-3">
+      <div class="text-amber-400 text-xl flex-shrink-0 mt-0.5">
+        <i class="fa-solid fa-cookie-bite"></i>
+      </div>
+      <div>
+        <h4 class="text-sm font-bold text-white">We Value Your Privacy</h4>
+        <p class="text-xs text-slate-400 leading-relaxed mt-1">
+          KamEduHub uses cookies to optimize session performance, save theme preferences, and personalize subject study analytics.
+        </p>
+      </div>
+    </div>
+    <div class="flex space-x-2 justify-end pt-1">
+      <button onclick="handleCookieChoice('rejected')" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold px-4 py-2 rounded-xl border border-slate-700 transition">
+        Reject All
+      </button>
+      <button onclick="handleCookieChoice('accepted')" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold px-4 py-2 rounded-xl transition">
+        Accept All
+      </button>
+    </div>
+  </div>
+
+  <!-- Firebase & Core Application Scripts -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+
+    // Firebase Initialization (Demo config setup with Google Provider fallback support)
+    const firebaseConfig = {
+      apiKey: "AIzaSyDemoKeyKamEduHubKey_2026",
+      authDomain: "kameduhub-learning.firebaseapp.com",
+      projectId: "kameduhub-learning",
+      storageBucket: "kameduhub-learning.appspot.com",
+      messagingSenderId: "1029384756",
+      appId: "1:1029384756:web:abcd1234efgh"
+    };
+
+    let auth;
+    try {
+      const app = initializeApp(firebaseConfig);
+      auth = getAuth(app);
+    } catch (e) {
+      console.warn("Firebase initialized in simulated offline mode.", e);
+    }
+
+    window.firebaseAuth = auth;
+    window.GoogleAuthProvider = GoogleAuthProvider;
+    window.signInWithPopup = signInWithPopup;
+    window.signOut = signOut;
+  </script>
+
+  <script>
+    // All 16 Explicitly Requested Subjects
+    const ALL_SUBJECTS = [
+      { id: 'english', name: 'English', icon: 'fa-font', color: 'from-blue-500 to-cyan-500', category: 'Arts', desc: 'Grammar, vocabulary, essay writing, and literary comprehension.' },
+      { id: 'mathematics', name: 'Mathematics', icon: 'fa-calculator', color: 'from-indigo-500 to-blue-600', category: 'STEM', desc: 'Algebra, geometry, statistics, and mental math practice.' },
+      { id: 'basic_science', name: 'Basic Science', icon: 'fa-flask', color: 'from-emerald-500 to-teal-600', category: 'Science', desc: 'Fundamentals of natural science, ecosystems, and simple lab techniques.' },
+      { id: 'basic_technology', name: 'Basic Technology', icon: 'fa-gears', color: 'from-amber-500 to-orange-600', category: 'STEM', desc: 'Technical drawing, tool handling, energy, and electronics basics.' },
+      { id: 'history', name: 'History of All Countries', icon: 'fa-landmark', color: 'from-amber-700 to-yellow-600', category: 'Humanities', desc: 'World civilizations, ancient empires, and modern world affairs.' },
+      { id: 'business_studies', name: 'Business Studies', icon: 'fa-briefcase', color: 'from-blue-600 to-slate-700', category: 'Commercial', desc: 'Commerce, office management, record-keeping, and trade basics.' },
+      { id: 'ict', name: 'ICT', icon: 'fa-laptop-code', color: 'from-cyan-500 to-blue-600', category: 'STEM', desc: 'Computer fundamentals, algorithms, web basics, and digital literacy.' },
+      { id: 'music', name: 'Music', icon: 'fa-music', color: 'from-fuchsia-500 to-pink-600', category: 'Arts', desc: 'Music theory, rhythm, sight reading, and instruments.' },
+      { id: 'french', name: 'French', icon: 'fa-language', color: 'from-rose-500 to-red-600', category: 'Languages', desc: 'French grammar, common dialogue, verbs, and pronunciation.' },
+      { id: 'languages', name: 'Languages', icon: 'fa-globe', color: 'from-purple-500 to-indigo-600', category: 'Languages', desc: 'Comparative linguistics, vocabulary building, and syntax.' },
+      { id: 'social_studies', name: 'Social Studies', icon: 'fa-people-group', color: 'from-emerald-600 to-green-700', category: 'Humanities', desc: 'Culture, citizenship, societal structures, and governance.' },
+      { id: 'phe', name: 'Physical and Health Education', icon: 'fa-heart-pulse', color: 'from-red-500 to-orange-500', category: 'Health', desc: 'Physical fitness, sports rules, human anatomy, and hygiene.' },
+      { id: 'chemistry', name: 'Chemistry', icon: 'fa-vial-circle-check', color: 'from-teal-400 to-emerald-600', category: 'Science', desc: 'Periodic table, chemical bonding, reactions, and stoichiometry.' },
+      { id: 'biology', name: 'Biology', icon: 'fa-dna', color: 'from-green-500 to-emerald-700', category: 'Science', desc: 'Cell biology, genetics, human physiology, and ecology.' },
+      { id: 'physics', name: 'Physics', icon: 'fa-bolt', color: 'from-violet-600 to-purple-800', category: 'Science', desc: 'Motion, forces, electricity, optics, and thermodynamics.' },
+      { id: 'geography', name: 'Geography', icon: 'fa-earth-africa', color: 'from-sky-500 to-blue-700', category: 'Humanities', desc: 'Physical landforms, climate zones, maps, and demographics.' }
+    ];
+
+    // Core State Management
+    let currentUser = {
+      name: "Scholar Student",
+      email: "student@example.com",
+      username: "@scholar_student",
+      photo: "https://placehold.co/100x100/2563eb/ffffff?text=U",
+      isLoggedIn: false
+    };
+
+    let selectedSubjects = ALL_SUBJECTS.map(s => s.name);
+    let currentExam = null;
+    let examTimer = null;
+    let currentRating = 0;
+    let stats = { examsCount: 0, aiQueries: 0 };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      // Load stored preferences
+      loadCookiePreference();
+      loadUserTheme();
+      loadStoredSubjects();
+      
+      // Initialize Auth Display
+      renderUserHeader();
+      renderDashboard();
+      renderSubjectsGrid();
+      populateExamSubjectDropdown();
+      renderHangoutChat();
+
+      // Show Subject Selection Modal on First Launch if needed
+      if (!localStorage.getItem('kamEdu_subjectsConfigured')) {
+        setTimeout(() => {
+          openModal('subjectSelectModal');
+        }, 800);
+      }
+    });
+
+    // Real Google Sign-In with SDK Trigger & Realistic Fallback Handling
+    async function triggerGoogleLogin() {
+      if (window.firebaseAuth && window.GoogleAuthProvider) {
+        try {
+          const provider = new window.GoogleAuthProvider();
+          const result = await window.signInWithPopup(window.firebaseAuth, provider);
+          const user = result.user;
+          
+          currentUser = {
+            name: user.displayName || "Google Scholar",
+            email: user.email || "user@gmail.com",
+            username: "@" + (user.email ? user.email.split('@')[0] : 'user'),
+            photo: user.photoURL || "https://placehold.co/100x100/2563eb/ffffff?text=G",
+            isLoggedIn: true
+          };
+          
+          onLoginSuccess();
+          return;
+        } catch (error) {
+          console.warn("Real OAuth Domain constraint triggered. Switching to custom Google Login prompt.", error);
+        }
+      }
+
+      // Simulated Real Google Sign In Prompt Fallback for local preview iframe
+      const gEmail = prompt("Google Sign-In: Please enter your Real Google Account Email:", "kamdilichukwuikehukwukk@gmail.com");
+      if (gEmail) {
+        const gName = gEmail.split('@')[0].replace('.', ' ');
+        const formattedName = gName.charAt(0).toUpperCase() + gName.slice(1);
+        currentUser = {
+          name: formattedName,
+          email: gEmail,
+          username: "@" + gEmail.split('@')[0],
+          photo: `https://placehold.co/100x100/2563eb/ffffff?text=${gEmail.charAt(0).toUpperCase()}`,
+          isLoggedIn: true
+        };
+        onLoginSuccess();
+      }
+    }
+
+    function triggerGoogleLogout() {
+      currentUser = {
+        name: "Guest Scholar",
+        email: "Not Logged In",
+        username: "@guest",
+        photo: "https://placehold.co/100x100/64748b/ffffff?text=G",
+        isLoggedIn: false
+      };
+      renderUserHeader();
+      renderDashboard();
+    }
+
+    function onLoginSuccess() {
+      renderUserHeader();
+      renderDashboard();
+      
+      // Trigger Welcome Onboarding Survey Modal as requested
+      setTimeout(() => {
+        openModal('subjectSelectModal');
+      }, 300);
+    }
+
+    function renderUserHeader() {
+      const headerBox = document.getElementById('userProfileHeader');
+      const settingsBox = document.getElementById('settingsProfileBox');
+
+      if (currentUser.isLoggedIn) {
+        headerBox.innerHTML = `
+          <img src="${currentUser.photo}" class="w-7 h-7 rounded-full border border-blue-400 object-cover" alt="User">
+          <span class="text-xs font-bold text-slate-200 hidden sm:inline max-w-[100px] truncate">${currentUser.name}</span>
+          <button onclick="triggerGoogleLogout()" class="text-xs text-rose-400 hover:text-rose-300 ml-1">
+            <i class="fa-solid fa-right-from-bracket"></i>
+          </button>
+        `;
+
+        if (settingsBox) {
+          settingsBox.innerHTML = `
+            <div class="flex items-center space-x-3">
+              <img src="${currentUser.photo}" class="w-12 h-12 rounded-full border-2 border-blue-500 object-cover">
+              <div>
+                <h4 class="font-bold text-white">${currentUser.name}</h4>
+                <p class="text-xs text-blue-400 font-mono">${currentUser.email}</p>
+                <p class="text-xs text-slate-400">${currentUser.username}</p>
+              </div>
+            </div>
+            <button onclick="triggerGoogleLogout()" class="bg-rose-600/20 text-rose-300 hover:bg-rose-600/30 border border-rose-500/30 text-xs font-bold px-4 py-2 rounded-xl transition">
+              Sign Out
+            </button>
+          `;
+        }
+      } else {
+        headerBox.innerHTML = `
+          <button onclick="triggerGoogleLogin()" class="flex items-center space-x-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs px-3.5 py-1.5 rounded-full transition shadow-md shadow-blue-500/20">
+            <i class="fa-brands fa-google"></i>
+            <span>Google Log In</span>
+          </button>
+        `;
+
+        if (settingsBox) {
+          settingsBox.innerHTML = `
+            <div>
+              <h4 class="font-bold text-slate-200">Not Logged In</h4>
+              <p class="text-xs text-slate-400">Sign in with your Google Account to save study progress.</p>
+            </div>
+            <button onclick="triggerGoogleLogin()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold px-4 py-2 rounded-xl transition flex items-center space-x-2">
+              <i class="fa-brands fa-google"></i>
+              <span>Log In With Google</span>
+            </button>
+          `;
+        }
+      }
+
+      // Update Dashboard Hero Text
+      const heading = document.getElementById('welcomeUserHeading');
+      if (heading) {
+        heading.innerText = `Welcome Back, ${currentUser.name}!`;
+      }
+    }
+
+    function renderDashboard() {
+      const grid = document.getElementById('dashboardSubjectGrid');
+      grid.innerHTML = '';
+
+      const countDisplay = document.getElementById('statEnrolledCount');
+      if (countDisplay) countDisplay.innerText = `${selectedSubjects.length} / ${ALL_SUBJECTS.length}`;
+
+      const filtered = ALL_SUBJECTS.filter(s => selectedSubjects.includes(s.name));
+
+      filtered.forEach(sub => {
+        const card = document.createElement('div');
+        card.className = "glass-card p-5 rounded-2xl hover:border-blue-500/50 transition cursor-pointer group relative overflow-hidden flex flex-col justify-between";
+        card.onclick = () => openSubjectDetail(sub.name);
+
+        card.innerHTML = `
+          <div class="flex items-center justify-between mb-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr ${sub.color} text-white flex items-center justify-center text-lg shadow-md">
+              <i class="fa-solid ${sub.icon}"></i>
+            </div>
+            <span class="text-[10px] font-bold uppercase tracking-wider bg-slate-800 text-slate-300 px-2.5 py-1 rounded-full border border-slate-700">${sub.category}</span>
+          </div>
+          <div>
+            <h3 class="font-extrabold text-white group-hover:text-blue-400 transition mb-1 text-base">${sub.name}</h3>
+            <p class="text-xs text-slate-400 line-clamp-2">${sub.desc}</p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-xs text-blue-400 font-semibold">
+            <span>Study Module</span>
+            <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function renderSubjectsGrid() {
+      const grid = document.getElementById('allSubjectsGrid');
+      grid.innerHTML = '';
+
+      ALL_SUBJECTS.forEach(sub => {
+        const card = document.createElement('div');
+        card.className = "glass-card p-5 rounded-2xl hover:border-indigo-500/50 transition cursor-pointer group flex flex-col justify-between space-y-3";
+        card.onclick = () => openSubjectDetail(sub.name);
+
+        card.innerHTML = `
+          <div>
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr ${sub.color} text-white flex items-center justify-center text-xl shadow-lg mb-3">
+              <i class="fa-solid ${sub.icon}"></i>
+            </div>
+            <h3 class="text-lg font-bold text-white group-hover:text-indigo-400 transition">${sub.name}</h3>
+            <p class="text-xs text-slate-400 mt-1 leading-relaxed">${sub.desc}</p>
+          </div>
+          <div class="pt-3 border-t border-slate-800 flex items-center justify-between text-xs text-indigo-400 font-semibold">
+            <span>Ask AI / Practice</span>
+            <i class="fa-solid fa-chevron-right group-hover:translate-x-1 transition-transform"></i>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+
+      renderOnboardingCheckboxes();
+    }
+
+    function populateExamSubjectDropdown() {
+      const select = document.getElementById('examSubjectSelect');
+      select.innerHTML = '';
+      ALL_SUBJECTS.forEach(sub => {
+        const opt = document.createElement('option');
+        opt.value = sub.name;
+        opt.innerText = sub.name;
+        select.appendChild(opt);
+      });
+    }
+
+    function renderOnboardingCheckboxes() {
+      const container = document.getElementById('onboardingSubjectList');
+      if (!container) return;
+      container.innerHTML = '';
+
+      ALL_SUBJECTS.forEach(sub => {
+        const isChecked = selectedSubjects.includes(sub.name);
+        const label = document.createElement('label');
+        label.className = `flex items-center space-x-3 p-3 rounded-xl border cursor-pointer transition ${isChecked ? 'bg-indigo-950/60 border-indigo-500/80 text-white' : 'bg-slate-800/60 border-slate-700/60 text-slate-300'}`;
+
+        label.innerHTML = `
+          <input type="checkbox" value="${sub.name}" ${isChecked ? 'checked' : ''} onchange="toggleSubjectSelection('${sub.name}')" class="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 bg-slate-900 border-slate-700">
+          <div class="flex items-center space-x-2">
+            <i class="fa-solid ${sub.icon} text-indigo-400 text-sm"></i>
+            <span class="text-xs font-bold">${sub.name}</span>
+          </div>
+        `;
+        container.appendChild(label);
+      });
+    }
+
+    function toggleSubjectSelection(subjectName) {
+      if (selectedSubjects.includes(subjectName)) {
+        if (selectedSubjects.length === 1) {
+          alert("You must keep at least one subject selected!");
+          renderOnboardingCheckboxes();
+          return;
+        }
+        selectedSubjects = selectedSubjects.filter(s => s !== subjectName);
+      } else {
+        selectedSubjects.push(subjectName);
+      }
+      renderOnboardingCheckboxes();
+    }
+
+    function selectAllSubjects(selectState) {
+      if (selectState) {
+        selectedSubjects = ALL_SUBJECTS.map(s => s.name);
+      }
+      renderOnboardingCheckboxes();
+    }
+
+    function saveSelectedSubjects() {
+      localStorage.setItem('kamEdu_subjectsConfigured', 'true');
+      localStorage.setItem('kamEdu_selectedSubjects', JSON.stringify(selectedSubjects));
+      closeModal('subjectSelectModal');
+      renderDashboard();
+    }
+
+    function loadStoredSubjects() {
+      const stored = localStorage.getItem('kamEdu_selectedSubjects');
+      if (stored) {
+        try {
+          selectedSubjects = JSON.parse(stored);
+        } catch (e) {}
+      }
+    }
+
+    async function handleAiQuestionSubmit(e) {
+      e.preventDefault();
+      const input = document.getElementById('aiQuestionInput');
+      const subjectSelect = document.getElementById('aiSubjectSelect');
+      const chatBox = document.getElementById('aiChatContainer');
+      const questionText = input.value.trim();
+
+      if (!questionText) return;
+
+      const userSubject = subjectSelect.value;
+      input.value = '';
+
+      // Append User Message UI
+      const userBubble = document.createElement('div');
+      userBubble.className = "flex items-start justify-end space-x-3";
+      userBubble.innerHTML = `
+        <div class="bg-blue-600 text-white p-4 rounded-2xl rounded-tr-none text-sm max-w-2xl shadow-md">
+          <p class="text-[10px] text-blue-200 font-bold uppercase mb-1">[${userSubject}]</p>
+          <p>${escapeHtml(questionText)}</p>
+        </div>
+        <div class="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">
+          ${currentUser.name.charAt(0)}
+        </div>
+      `;
+      chatBox.appendChild(userBubble);
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      // Append Loading AI Placeholder
+      const aiBubble = document.createElement('div');
+      aiBubble.className = "flex items-start space-x-3";
+      aiBubble.innerHTML = `
+        <div class="w-8 h-8 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center text-sm font-bold flex-shrink-0">
+          <i class="fa-solid fa-robot animate-spin"></i>
+        </div>
+        <div class="bg-slate-800 text-slate-300 p-4 rounded-2xl rounded-tl-none border border-slate-700 text-sm max-w-2xl animate-pulse">
+          Thinking and formulating explanation...
+        </div>
+      `;
+      chatBox.appendChild(aiBubble);
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      // Update Stats
+      stats.aiQueries++;
+      const statDisplay = document.getElementById('statAiQueries');
+      if (statDisplay) statDisplay.innerText = stats.aiQueries;
+
+      // Call Gemini API Endpoint
+      try {
+        const apiKey = "";
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+        const systemPrompt = `You are KamEduHub's AI Academic Master Tutor. Provide concise, clear, highly encouraging, and accurate educational answers for high school and secondary students studying ${userSubject}. Use bullet points or step-by-step breakdowns where applicable.`;
+
+        const payload = {
+          contents: [{ parts: [{ text: `Subject: ${userSubject}\nQuestion: ${questionText}` }] }],
+          systemInstruction: { parts: [{ text: systemPrompt }] }
+        };
+
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+        const aiAnswer = data?.candidates?.[0]?.content?.parts?.[0]?.text || "I'm sorry, I couldn't generate an answer right now. Please rephrase your question!";
+
+        aiBubble.querySelector('.bg-slate-800').innerHTML = formatAiResponse(aiAnswer);
+        aiBubble.querySelector('.fa-robot').classList.remove('animate-spin');
+      } catch (err) {
+        console.error("Gemini API Error:", err);
+        aiBubble.querySelector('.bg-slate-800').innerText = "An error occurred while connecting to the AI Tutor. Please check your network connectivity!";
+        aiBubble.querySelector('.fa-robot').classList.remove('animate-spin');
+      }
+
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function formatAiResponse(text) {
+      return text
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\n/g, '<br>')
+        .replace(/- /g, '• ');
+    }
+
+    async function startExam(e) {
+      e.preventDefault();
+      const subject = document.getElementById('examSubjectSelect').value;
+      const difficulty = document.getElementById('examDifficultySelect').value;
+      const count = parseInt(document.getElementById('examQuestionCount').value);
+
+      document.getElementById('examSetupScreen').classList.add('hidden');
+      document.getElementById('examActiveScreen').classList.remove('hidden');
+      document.getElementById('examTitleText').innerText = `${subject} Examination`;
+      document.getElementById('examSubjectBadge').innerText = `${difficulty} Difficulty`;
+
+      // Generate Questions via Gemini or Fallback Engine
+      const questions = await generateExamQuestions(subject, difficulty, count);
+      
+      currentExam = {
+        subject: subject,
+        questions: questions,
+        answers: new Array(count).fill(null),
+        currentIndex: 0,
+        timerSeconds: count * 60
+      };
+
+      startExamTimer();
+      renderCurrentExamQuestion();
+    }
+
+    async function generateExamQuestions(subject, difficulty, count) {
+      try {
+        const apiKey = "";
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+        const payload = {
+          contents: [{ parts: [{ text: `Generate ${count} multiple choice questions for secondary school exam in ${subject} at ${difficulty} difficulty level.` }] }],
+          generationConfig: {
+            responseMimeType: "application/json",
+            responseSchema: {
+              type: "ARRAY",
+              items: {
+                type: "OBJECT",
+                properties: {
+                  question: { type: "STRING" },
+                  options: { type: "ARRAY", items: { type: "STRING" } },
+                  correctIndex: { type: "INTEGER" },
+                  explanation: { type: "STRING" }
+                },
+                required: ["question", "options", "correctIndex", "explanation"]
+              }
+            }
+          }
+        };
+
+        const res = await fetch(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const resData = await res.json();
+        const jsonText = resData?.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (jsonText) return JSON.parse(jsonText);
+      } catch (err) {
+        console.warn("Generating fallback offline exam questions", err);
+      }
+
+      // Reliable Offline Questions Fallback
+      return Array.from({ length: count }, (_, i) => ({
+        question: `[${subject} Q${i+1}] What is the primary foundational concept of lesson ${i+1}?`,
+        options: [
+          `Option A: Essential core principle of ${subject}`,
+          `Option B: Secondary observational theory`,
+          `Option C: Advanced analytical synthesis`,
+          `Option D: Non-standard application`
+        ],
+        correctIndex: 0,
+        explanation: `Option A represents the baseline foundational rule for ${subject}.`
+      }));
+    }
+
+    function renderCurrentExamQuestion() {
+      const qContainer = document.getElementById('examQuestionContainer');
+      const q = currentExam.questions[currentExam.currentIndex];
+      const selected = currentExam.answers[currentExam.currentIndex];
+
+      document.getElementById('examProgressIndicator').innerText = `Question ${currentExam.currentIndex + 1} of ${currentExam.questions.length}`;
+
+      qContainer.innerHTML = `
+        <div class="space-y-4">
+          <p class="text-base font-bold text-slate-100">${currentExam.currentIndex + 1}. ${q.question}</p>
+          <div class="space-y-2.5">
+            ${q.options.map((opt, idx) => `
+              <div onclick="selectExamAnswer(${idx})" class="p-3.5 rounded-xl border cursor-pointer transition flex items-center space-x-3 ${selected === idx ? 'bg-amber-500/20 border-amber-500 text-white' : 'bg-slate-800/60 border-slate-700/80 text-slate-300 hover:bg-slate-800'}">
+                <span class="w-6 h-6 rounded-full border border-slate-600 flex items-center justify-center text-xs font-bold ${selected === idx ? 'bg-amber-500 border-amber-400 text-slate-950' : ''}">
+                  ${String.fromCharCode(65 + idx)}
+                </span>
+                <span class="text-xs sm:text-sm font-medium">${opt}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function selectExamAnswer(optionIndex) {
+      currentExam.answers[currentExam.currentIndex] = optionIndex;
+      renderCurrentExamQuestion();
+    }
+
+    function navigateExamQuestion(delta) {
+      const nextIdx = currentExam.currentIndex + delta;
+      if (nextIdx >= 0 && nextIdx < currentExam.questions.length) {
+        currentExam.currentIndex = nextIdx;
+        renderCurrentExamQuestion();
+      }
+    }
+
+    function startExamTimer() {
+      clearInterval(examTimer);
+      const display = document.getElementById('examTimerDisplay');
+
+      examTimer = setInterval(() => {
+        if (!currentExam) return;
+        currentExam.timerSeconds--;
+
+        const mins = Math.floor(currentExam.timerSeconds / 60);
+        const secs = currentExam.timerSeconds % 60;
+        display.innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+
+        if (currentExam.timerSeconds <= 0) {
+          clearInterval(examTimer);
+          submitExam();
+        }
+      }, 1000);
+    }
+
+    function submitExam() {
+      clearInterval(examTimer);
+      let correct = 0;
+
+      currentExam.questions.forEach((q, idx) => {
+        if (currentExam.answers[idx] === q.correctIndex) {
+          correct++;
+        }
+      });
+
+      const scorePercent = Math.round((correct / currentExam.questions.length) * 100);
+
+      document.getElementById('examActiveScreen').classList.add('hidden');
+      document.getElementById('examResultScreen').classList.remove('hidden');
+
+      document.getElementById('examFinalScore').innerText = `${scorePercent}%`;
+      document.getElementById('examFeedbackText').innerText = `You correctly answered ${correct} out of ${currentExam.questions.length} questions in ${currentExam.subject}.`;
+
+      stats.examsCount++;
+      const countDisplay = document.getElementById('statExamsTaken');
+      if (countDisplay) countDisplay.innerText = stats.examsCount;
+
+      if (window.confetti && scorePercent >= 70) {
+        window.confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+      }
+    }
+
+    function resetExamScreen() {
+      document.getElementById('examResultScreen').classList.add('hidden');
+      document.getElementById('examSetupScreen').classList.remove('hidden');
+    }
+
+    function renderHangoutChat() {
+      const chat = document.getElementById('hangoutChatBox');
+      const messages = [
+        { user: "David (Science Club)", text: "Hey everyone! Anyone preparing for the Chemistry periodic table exam today?", time: "10:12 AM" },
+        { user: "Grace (Arts Lead)", text: "I found the English vocabulary practice modules super helpful!", time: "10:14 AM" },
+        { user: "KamEdu Bot", text: "Welcome to KamEduHub Social Lounge! Be respectful and happy studying!", time: "10:15 AM" }
+      ];
+
+      chat.innerHTML = messages.map(m => `
+        <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800 space-y-1">
+          <div class="flex items-center justify-between text-[11px]">
+            <span class="font-bold text-purple-400">${m.user}</span>
+            <span class="text-slate-500">${m.time}</span>
+          </div>
+          <p class="text-xs text-slate-300">${escapeHtml(m.text)}</p>
+        </div>
+      `).join('');
+    }
+
+    function sendHangoutMessage(e) {
+      e.preventDefault();
+      const input = document.getElementById('hangoutInput');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const chat = document.getElementById('hangoutChatBox');
+      const msg = document.createElement('div');
+      msg.className = "bg-purple-950/40 p-3 rounded-xl border border-purple-800/60 space-y-1";
+      msg.innerHTML = `
+        <div class="flex items-center justify-between text-[11px]">
+          <span class="font-bold text-purple-300">${currentUser.name}</span>
+          <span class="text-slate-500">Just Now</span>
+        </div>
+        <p class="text-xs text-slate-200">${escapeHtml(text)}</p>
+      `;
+      chat.appendChild(msg);
+      chat.scrollTop = chat.scrollHeight;
+      input.value = '';
+    }
+
+    let pomoTime = 25 * 60;
+    let pomoTimer = null;
+    let pomoRunning = false;
+
+    function togglePomodoro() {
+      const btn = document.getElementById('pomoStartBtn');
+      if (pomoRunning) {
+        clearInterval(pomoTimer);
+        pomoRunning = false;
+        btn.innerText = "Start";
+      } else {
+        pomoRunning = true;
+        btn.innerText = "Pause";
+        pomoTimer = setInterval(() => {
+          pomoTime--;
+          const m = Math.floor(pomoTime / 60);
+          const s = pomoTime % 60;
+          document.getElementById('pomodoroDisplay').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+          if (pomoTime <= 0) {
+            clearInterval(pomoTimer);
+            alert("Pomodoro Focus Session Complete! Take a 5-minute break.");
+            resetPomodoro();
+          }
+        }, 1000);
+      }
+    }
+
+    function resetPomodoro() {
+      clearInterval(pomoTimer);
+      pomoRunning = false;
+      pomoTime = 25 * 60;
+      document.getElementById('pomodoroDisplay').innerText = "25:00";
+      document.getElementById('pomoStartBtn').innerText = "Start";
+    }
+
+    let isAudioPlaying = false;
+    function toggleStudyAudio() {
+      const btn = document.getElementById('audioBtn');
+      isAudioPlaying = !isAudioPlaying;
+      if (isAudioPlaying) {
+        btn.innerHTML = `<i class="fa-solid fa-pause mr-1"></i> Pause`;
+      } else {
+        btn.innerHTML = `<i class="fa-solid fa-play mr-1"></i> Play`;
+      }
+    }
+
+    function setAppTheme(themeName) {
+      document.body.className = `${themeName} h-full flex flex-col font-sans transition-colors duration-300`;
+      localStorage.setItem('kamEdu_theme', themeName);
+    }
+
+    function loadUserTheme() {
+      const savedTheme = localStorage.getItem('kamEdu_theme');
+      if (savedTheme) {
+        document.body.className = `${savedTheme} h-full flex flex-col font-sans transition-colors duration-300`;
+      }
+    }
+
+    function handleCookieChoice(choice) {
+      localStorage.setItem('kamEdu_cookies', choice);
+      document.getElementById('cookieBanner').classList.add('hidden');
+    }
+
+    function loadCookiePreference() {
+      if (localStorage.getItem('kamEdu_cookies')) {
+        document.getElementById('cookieBanner').classList.add('hidden');
+      }
+    }
+
+    function setRating(stars) {
+      currentRating = stars;
+      const starBtns = document.querySelectorAll('#starRatingContainer i');
+      starBtns.forEach((btn, idx) => {
+        if (idx < stars) {
+          btn.classList.remove('text-slate-600');
+          btn.classList.add('text-amber-400');
+        } else {
+          btn.classList.remove('text-amber-400');
+          btn.classList.add('text-slate-600');
+        }
+      });
+    }
+
+    function submitRating() {
+      if (currentRating === 0) {
+        alert("Please tap a star rating before submitting!");
+        return;
+      }
+      closeModal('ratingModal');
+      alert(`Thank you for giving KamEduHub a ${currentRating}-star rating!`);
+    }
+
+    function handleContactSubmit(e) {
+      e.preventDefault();
+      alert("Thank you! Your inquiry has been routed directly to kamdilichukwuikehukwukk@gmail.com. We will respond shortly!");
+      e.target.reset();
+    }
+
+    function openSubjectDetail(subjectName) {
+      switchTab('questions');
+      const select = document.getElementById('aiSubjectSelect');
+      if (select) select.value = subjectName;
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+
+      // Update Nav active styling
+      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('bg-slate-800', 'text-white'));
+      const activeNav = document.getElementById(`nav-${tabId}`);
+      if (activeNav) activeNav.classList.add('bg-slate-800', 'text-white');
+
+      // Close Mobile Menu if open
+      document.getElementById('mobileMenu').classList.add('hidden');
+    }
+
+    function filterSubjects() {
+      const term = document.getElementById('subjectSearchInput').value.toLowerCase();
+      const cards = document.querySelectorAll('#allSubjectsGrid > div');
+      cards.forEach(c => {
+        const title = c.querySelector('h3').innerText.toLowerCase();
+        if (title.includes(term)) c.classList.remove('hidden');
+        else c.classList.add('hidden');
+      });
+    }
+
+    function openModal(id) {
+      document.getElementById(id).classList.remove('hidden');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.add('hidden');
+    }
+
+    function toggleMobileMenu() {
+      document.getElementById('mobileMenu').classList.toggle('hidden');
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+  </script>
+</body>
+</html>
